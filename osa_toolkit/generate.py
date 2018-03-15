@@ -624,14 +624,15 @@ def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
             net_type,
             net_mtu
         )
+
+        network = networks[old_address] = _network
+
         # This should convert found addresses based on q_name + "_address"
         #  and then build the network if its not found.
-        if not is_metal and (old_address not in networks or
-                             networks[old_address] != _network):
-            network = networks[old_address] = _network
+        if not is_metal and old_address not in networks:
             if old_address in container and container[old_address]:
                 network['address'] = container.pop(old_address)
-            elif not is_metal:
+            else:
                 address = ip.get_ip_address(name=q_name, ip_q=ip_q)
                 if address:
                     network['address'] = address
